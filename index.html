@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Perfect Compliment Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✨ The Perfect Compliment Generator</h1>
+            <p class="tagline">Listen. Understand. Compliment.</p>
+        </header>
+
+        <main>
+            <div class="status-container">
+                <div id="statusMessage" class="status-message">
+                    Ready to listen to a conversation
+                </div>
+                <div id="timer" class="timer hidden">30</div>
+            </div>
+
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary">
+                    <span class="btn-icon">🎤</span>
+                    Start Listening
+                </button>
+                <button id="stopBtn" class="btn btn-secondary hidden">
+                    <span class="btn-icon">⏹️</span>
+                    Stop
+                </button>
+            </div>
+
+            <div id="transcriptContainer" class="transcript-container hidden">
+                <h3>Conversation Transcript:</h3>
+                <div id="transcript" class="transcript"></div>
+            </div>
+
+            <div id="complimentContainer" class="compliment-container hidden">
+                <div class="compliment-header">
+                    <h2>Your Perfect Compliment</h2>
+                    <div class="sparkle">✨</div>
+                </div>
+                <blockquote id="compliment" class="compliment"></blockquote>
+                <div class="compliment-footer">
+                    <button id="copyBtn" class="btn btn-small">Copy to Clipboard</button>
+                    <button id="resetBtn" class="btn btn-small">Generate Another</button>
+                </div>
+            </div>
+
+            <div id="settingsContainer" class="settings-container">
+                <details>
+                    <summary>⚙️ Settings & API Configuration</summary>
+                    <div class="settings-content">
+                        <div class="setting-group">
+                            <label for="apiProvider">AI Provider:</label>
+                            <select id="apiProvider">
+                                <option value="browser">Browser Speech API (Free, less accurate)</option>
+                                <option value="openai">OpenAI (Requires API key)</option>
+                                <option value="anthropic">Anthropic Claude (Requires API key)</option>
+                            </select>
+                        </div>
+                        <div class="setting-group" id="apiKeyGroup" style="display:none;">
+                            <label for="apiKey">API Key:</label>
+                            <input type="password" id="apiKey" placeholder="Enter your API key">
+                            <small>Your API key is stored locally and never sent anywhere except to the chosen API provider.</small>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </main>
+
+        <footer>
+            <p>🎯 This app analyzes 30 seconds of conversation to generate a truly personalized compliment</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
