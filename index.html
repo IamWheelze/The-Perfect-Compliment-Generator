@@ -3,22 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Perfect Compliment Generator</title>
+    <meta name="description" content="AI-powered app that listens to conversations and generates deeply personalized, meaningful compliments">
+    <meta name="theme-color" content="#667eea">
+    <title>The Perfect Compliment Generator - AI-Powered Personalized Compliments</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
+    <!-- Particles background -->
+    <div id="particles"></div>
+
+    <!-- Theme switcher -->
+    <div class="theme-switcher">
+        <button id="themeBtn" class="theme-btn" title="Change theme">🎨</button>
+    </div>
+
+    <!-- History toggle -->
+    <div class="history-toggle">
+        <button id="historyBtn" class="history-btn" title="View history">📜</button>
+    </div>
+
     <div class="container">
         <header>
             <h1>✨ The Perfect Compliment Generator</h1>
             <p class="tagline">Listen. Understand. Compliment.</p>
+            <div class="stats">
+                <span id="statsCompliments">0 compliments generated</span>
+            </div>
         </header>
 
         <main>
+            <!-- Audio Visualizer -->
+            <div id="visualizerContainer" class="visualizer-container hidden">
+                <canvas id="visualizer"></canvas>
+                <div class="visualizer-overlay">
+                    <div class="pulse-ring"></div>
+                </div>
+            </div>
+
             <div class="status-container">
                 <div id="statusMessage" class="status-message">
                     Ready to listen to a conversation
                 </div>
-                <div id="timer" class="timer hidden">30</div>
+                <div id="timer" class="timer hidden">
+                    <span id="timerValue">30</span>
+                    <div class="timer-progress">
+                        <div id="timerBar" class="timer-bar"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="controls">
@@ -37,15 +69,67 @@
                 <div id="transcript" class="transcript"></div>
             </div>
 
+            <!-- Sentiment Analysis -->
+            <div id="sentimentContainer" class="sentiment-container hidden">
+                <h3>Conversation Analysis</h3>
+                <div class="sentiment-bars">
+                    <div class="sentiment-item">
+                        <span>Positivity</span>
+                        <div class="sentiment-bar-bg">
+                            <div id="positivityBar" class="sentiment-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="sentiment-item">
+                        <span>Enthusiasm</span>
+                        <div class="sentiment-bar-bg">
+                            <div id="enthusiasmBar" class="sentiment-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="sentiment-item">
+                        <span>Depth</span>
+                        <div class="sentiment-bar-bg">
+                            <div id="depthBar" class="sentiment-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="personalityTags" class="personality-tags"></div>
+            </div>
+
             <div id="complimentContainer" class="compliment-container hidden">
                 <div class="compliment-header">
                     <h2>Your Perfect Compliment</h2>
                     <div class="sparkle">✨</div>
                 </div>
+
+                <!-- Compliment Style Selector -->
+                <div class="style-selector">
+                    <label>Compliment Style:</label>
+                    <div class="style-buttons">
+                        <button class="style-btn active" data-style="profound">Profound</button>
+                        <button class="style-btn" data-style="poetic">Poetic</button>
+                        <button class="style-btn" data-style="casual">Casual</button>
+                        <button class="style-btn" data-style="professional">Professional</button>
+                    </div>
+                </div>
+
                 <blockquote id="compliment" class="compliment"></blockquote>
-                <div class="compliment-footer">
-                    <button id="copyBtn" class="btn btn-small">Copy to Clipboard</button>
-                    <button id="resetBtn" class="btn btn-small">Generate Another</button>
+
+                <div class="compliment-actions">
+                    <button id="copyBtn" class="btn btn-small">
+                        <span class="btn-icon">📋</span> Copy
+                    </button>
+                    <button id="shareBtn" class="btn btn-small">
+                        <span class="btn-icon">🔗</span> Share
+                    </button>
+                    <button id="saveBtn" class="btn btn-small">
+                        <span class="btn-icon">💾</span> Save
+                    </button>
+                    <button id="regenerateBtn" class="btn btn-small">
+                        <span class="btn-icon">🔄</span> Regenerate
+                    </button>
+                    <button id="resetBtn" class="btn btn-small">
+                        <span class="btn-icon">✨</span> New
+                    </button>
                 </div>
             </div>
 
@@ -66,14 +150,76 @@
                             <input type="password" id="apiKey" placeholder="Enter your API key">
                             <small>Your API key is stored locally and never sent anywhere except to the chosen API provider.</small>
                         </div>
+                        <div class="setting-group">
+                            <label for="recordingTime">Recording Duration:</label>
+                            <select id="recordingTime">
+                                <option value="15">15 seconds</option>
+                                <option value="30" selected>30 seconds</option>
+                                <option value="45">45 seconds</option>
+                                <option value="60">60 seconds</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="soundEffects" checked>
+                                Enable sound effects
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="autoSave" checked>
+                                Auto-save compliments to history
+                            </label>
+                        </div>
                     </div>
                 </details>
             </div>
         </main>
 
         <footer>
-            <p>🎯 This app analyzes 30 seconds of conversation to generate a truly personalized compliment</p>
+            <p>🎯 This app analyzes conversations to generate truly personalized compliments</p>
+            <p class="footer-links">
+                <a href="#" id="aboutLink">About</a> •
+                <a href="#" id="exportDataLink">Export Data</a> •
+                <a href="#" id="clearDataLink">Clear History</a>
+            </p>
         </footer>
+    </div>
+
+    <!-- History Panel -->
+    <div id="historyPanel" class="history-panel">
+        <div class="history-header">
+            <h2>📜 Compliment History</h2>
+            <button id="closeHistoryBtn" class="close-btn">✕</button>
+        </div>
+        <div id="historyContent" class="history-content">
+            <p class="history-empty">No compliments saved yet. Start generating!</p>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Share Your Compliment</h3>
+            <div class="share-options">
+                <button class="share-option" data-platform="twitter">
+                    <span class="share-icon">🐦</span> Twitter
+                </button>
+                <button class="share-option" data-platform="facebook">
+                    <span class="share-icon">📘</span> Facebook
+                </button>
+                <button class="share-option" data-platform="linkedin">
+                    <span class="share-icon">💼</span> LinkedIn
+                </button>
+                <button class="share-option" data-platform="email">
+                    <span class="share-icon">✉️</span> Email
+                </button>
+                <button class="share-option" data-platform="download">
+                    <span class="share-icon">💾</span> Download Image
+                </button>
+            </div>
+            <button id="closeShareModal" class="btn btn-small">Close</button>
+        </div>
     </div>
 
     <script src="app.js"></script>
